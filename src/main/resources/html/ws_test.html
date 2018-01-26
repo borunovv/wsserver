@@ -1,0 +1,58 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta charset="utf-8" />
+    </head>
+
+<body>
+
+<div id="history"></div>
+<input type="button" id="btn" value="Send test data" onClick="onButtonClick()"></input>
+
+<script>
+
+log("Connecting..");
+
+var socket = new WebSocket("ws://localhost:8888");
+
+socket.onopen = function() {
+  log("Connected successfully!");
+  document.getElementById("btn").style.visibility = "visible";
+};
+
+socket.onclose = function(event) {
+  if (event.wasClean) {
+    log('Connection closed gracefully');
+  } else {
+    log('Connection aborted'); // например, "убит" процесс сервера
+  }
+  log('Code: ' + event.code + ' Cause: ' + event.reason + ' (ensure server is running and press F5 to try again)');
+  document.getElementById("btn").style.visibility = "hidden";
+};
+
+socket.onmessage = function(event) {
+  log("Response from server: '<i><b>" + event.data + "'</b></i>");
+};
+
+socket.onerror = function(error) {
+  log("Error " + error.message);
+};
+
+function log(line) {
+    var div = document.getElementById("history");   
+    div.innerHTML += line + '<br/>';
+}
+
+var counter = 1;
+function onButtonClick(e) {
+    var msg = "Hello from client! Message index #" + (counter++)
+    log("Request: " + "<b>" + msg + "</b>");
+    socket.send(msg);
+}
+
+document.getElementById("btn").style.visibility = "hidden";
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,5 @@
+target/
+.idea
+*.iml
+*.bat
+atlassian-ide-plugin.xml
